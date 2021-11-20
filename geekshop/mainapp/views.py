@@ -4,8 +4,14 @@ from django.shortcuts import render
 
 
 def index(request):
-    return render(request, 'mainapp/index.html')
+    context = {
+        'title': 'geekShop',
+    }
+    return render(request, 'mainapp/index.html', context)
 
 
 def products(request):
-    return render(request, 'mainapp/products.html')
+    context = {
+        'title': 'geekShop - Каталог',
+    }
+    return render(request, 'mainapp/products.html', context)
