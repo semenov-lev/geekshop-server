@@ -1,0 +1,10 @@
+[
+  {
+    "model": "mainapp.productcategory",
+    "pk": 1,
+    "fields": {
+      "name": "Новинки",
+      "description": "Сезон  2021"
+    }
+  }
+]

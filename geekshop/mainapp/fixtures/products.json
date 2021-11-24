@@ -1,1 +1,80 @@
-
+[
+  {
+    "model": "mainapp.product",
+    "pk": 1,
+    "fields": {
+      "category": 1,
+      "name": "Худи черного цвета с монограммами adidas Originals",
+      "image": "products_images/Adidas-hoodie.png",
+      "short_description": "Мягкая ткань для свитшотов. Стиль и комфорт – это образ жизни.",
+      "description": "",
+      "price": "6090.00",
+      "quantity": 15
+    }
+  },
+  {
+    "model": "mainapp.product",
+    "pk": 2,
+    "fields": {
+      "category": 1,
+      "name": "Синяя куртка The North Face",
+      "image": "products_images/Blue-jacket-The-North-Face.png",
+      "short_description": "Гладкая ткань. Водонепроницаемое покрытие. Легкий и теплый пуховый наполнитель.",
+      "description": "",
+      "price": "23725.00",
+      "quantity": 10
+    }
+  },
+  {
+    "model": "mainapp.product",
+    "pk": 3,
+    "fields": {
+      "category": 1,
+      "name": "Коричневый спортивный oversized-топ ASOS DESIGN",
+      "image": "products_images/Brown-sports-oversized-top-ASOS-DESIGN.png",
+      "short_description": "Материал с плюшевой текстурой. Удобный и мягкий.",
+      "description": "",
+      "price": "3390.00",
+      "quantity": 20
+    }
+  },
+  {
+    "model": "mainapp.product",
+    "pk": 4,
+    "fields": {
+      "category": 1,
+      "name": "Черный рюкзак Nike Heritage",
+      "image": "products_images/Black-Nike-Heritage-backpack_UZKSqdH.png",
+      "short_description": "Плотная ткань. Легкий материал.",
+      "description": "",
+      "price": "2340.00",
+      "quantity": 20
+    }
+  },
+  {
+    "model": "mainapp.product",
+    "pk": 5,
+    "fields": {
+      "category": 1,
+      "name": "Черные туфли на платформе с 3 парами люверсов Dr Martens 146",
+      "image": "products_images/Black-Dr-Martens-shoes.png",
+      "short_description": "Гладкий кожаный верх. Натуральный материал.",
+      "description": "",
+      "price": "13590.00",
+      "quantity": 10
+    }
+  },
+  {
+    "model": "mainapp.product",
+    "pk": 6,
+    "fields": {
+      "category": 1,
+      "name": "Темно-синие широкие строгие брюки ASOS DESIGN",
+      "image": "products_images/Dark-blue-wide-leg-ASOs-DESIGN-trousers.png",
+      "short_description": "Легкая эластичная ткань сирсакер Фактурная ткань.",
+      "description": "",
+      "price": "2890.00",
+      "quantity": 22
+    }
+  }
+]
