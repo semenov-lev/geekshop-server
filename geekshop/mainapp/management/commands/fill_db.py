@@ -1,7 +1,7 @@
 import json
 from django.core.management.base import BaseCommand
+from authapp.models import User
 from mainapp.models import ProductCategory, Product
-from django.contrib.auth.models import User
 
 
 def load_from_json(file_name):
@@ -31,4 +31,4 @@ class Command(BaseCommand):
             new_product = Product(**product_fields)
             new_product.save()
 
-        User.objects.create_superuser('django', 'django@geekshop.local', 'geekbrains')
+        super_user = User.objects.create_superuser('django', 'django@geekshop.local', 'geekbrains')
