@@ -24,7 +24,7 @@ def login(request):
         form = UserLoginForm()
     context = {
         'title': 'GeekShop | Авторизация',
-        'form': UserLoginForm(),
+        'form': form,
     }
     return render(request, 'authapp/login.html', context)
 
@@ -41,7 +41,7 @@ def register(request):
         form = UserRegisterForm()
     context = {
         'title': 'GeekShop | Регистрация',
-        'form': UserRegisterForm(),
+        'form': form,
     }
     return render(request, 'authapp/register.html', context)
 
