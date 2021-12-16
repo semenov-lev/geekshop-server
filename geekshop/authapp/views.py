@@ -4,9 +4,7 @@ from django.contrib import auth, messages
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from authapp.forms import UserLoginForm, UserRegisterForm, UserProfileForm
-
-
-# Create your views here.
+from baskets.models import Basket
 
 
 def login(request):
@@ -54,6 +52,7 @@ def profile(request):
     context = {
         'title': 'GeekShop | Профиль',
         'form': UserProfileForm(instance=request.user),
+        'baskets': Basket.objects.filter(user=request.user),
     }
     return render(request, 'authapp/profile.html', context)
 
