@@ -1,5 +1,6 @@
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UserChangeForm
 from django import forms
+from django.core.exceptions import ValidationError
 
 from authapp.models import User
 
@@ -51,3 +52,18 @@ class UserProfileForm(UserChangeForm):
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control py-4'
         self.fields['image'].widget.attrs['class'] = 'custom-file-input'
+
+    def clean_image(self):
+        user_img = self.cleaned_data['image']
+        if user_img:
+            if user_img.size > 5242880:
+                raise ValidationError('Размер файла не может превышать 5 МБ')
+            else:
+                return user_img
+
+    def clean_age(self):
+        user_age = self.cleaned_data['age']
+        if user_age < 1:
+            raise ValidationError('Возраст не может быть меньше 1')
+        else:
+            return user_age

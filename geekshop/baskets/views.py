@@ -1,5 +1,4 @@
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
 from mainapp.models import Product
 from .models import Basket
 

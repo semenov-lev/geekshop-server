@@ -49,11 +49,12 @@ def profile(request):
         form = UserProfileForm(instance=request.user, data=request.POST, files=request.FILES)
         if form.is_valid():
             form.save()
-        else:
-            print(form.errors)
+            messages.success(request, 'Данные успешно обновлены!')
+    else:
+        form = UserProfileForm(instance=request.user)
     context = {
         'title': 'GeekShop | Профиль',
-        'form': UserProfileForm(instance=request.user),
+        'form': form,
         'baskets': Basket.objects.filter(user=request.user),
     }
     return render(request, 'authapp/profile.html', context)
