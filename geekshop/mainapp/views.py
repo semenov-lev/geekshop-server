@@ -16,3 +16,12 @@ def products(request):
         'products': Product.objects.all()[:6]
     }
     return render(request, 'mainapp/products.html', context)
+
+
+def product_detail(request, product_id):
+    product = Product.objects.get(id=product_id)
+    context = {
+        'title': product.name,
+        'product': product
+    }
+    return render(request, 'mainapp/detail.html', context)
