@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.views.generic import DetailView
 
 from .models import Product
 
@@ -18,10 +19,12 @@ def products(request):
     return render(request, 'mainapp/products.html', context)
 
 
-def product_detail(request, product_id):
-    product = Product.objects.get(id=product_id)
-    context = {
-        'title': product.name,
-        'product': product
-    }
-    return render(request, 'mainapp/detail.html', context)
+class ProductDetail(DetailView):
+    model = Product
+    template_name = 'mainapp/detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ProductDetail, self).get_context_data(**kwargs)
+        product = self.get_object()
+        context['product'] = product
+        return context
