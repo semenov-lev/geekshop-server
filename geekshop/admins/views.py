@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.urls import reverse
 
 from authapp.models import User
-from .forms import AdminUserRegisterForm
+from .forms import AdminUserRegisterForm, AdminUserUpdateForm
 
 
 def index(request):
@@ -39,14 +39,25 @@ def user_create(request):
 
 
 def user_update(request, pk):
+    updated_user = User.objects.get(id=pk)
+    if request.method == 'POST':
+        form = AdminUserUpdateForm(data=request.POST, instance=updated_user, files=request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Данные успешно обновлены!')
+            return HttpResponseRedirect(reverse('admins:user_read'))
+    else:
+        form = AdminUserUpdateForm(instance=updated_user)
     context = {
-        'user': pk
+        'title': f'GeekShop - Администратор | Пользователь {updated_user.username}',
+        'form': form,
+        'updated_user': updated_user
     }
     return render(request, 'admins/admin-users-update-delete.html', context)
 
 
 def user_delete(request, pk):
-    context = {
-        'user': pk
-    }
-    return render(request, 'admins/admin-users-update-delete.html', context)
+    user = User.objects.get(pk=pk)
+    user.is_active = False
+    user.save()
+    return HttpResponseRedirect(reverse('admins:user_read'))
