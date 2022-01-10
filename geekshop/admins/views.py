@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
@@ -7,6 +8,7 @@ from authapp.models import User
 from .forms import AdminUserRegisterForm, AdminUserUpdateForm
 
 
+@user_passes_test(lambda u: u.is_superuser)
 def index(request):
     context = {
         'title': 'GeekShop - Администратор'
@@ -14,6 +16,7 @@ def index(request):
     return render(request, 'admins/admin.html', context)
 
 
+@user_passes_test(lambda u: u.is_superuser)
 def user_read(request):
     context = {
         'title': 'GeekShop - Администратор | Пользователи',
@@ -22,6 +25,7 @@ def user_read(request):
     return render(request, 'admins/admin-users-read.html', context)
 
 
+@user_passes_test(lambda u: u.is_superuser)
 def user_create(request):
     if request.method == 'POST':
         form = AdminUserRegisterForm(data=request.POST)
@@ -38,6 +42,7 @@ def user_create(request):
     return render(request, 'admins/admin-users-create.html', context)
 
 
+@user_passes_test(lambda u: u.is_superuser)
 def user_update(request, pk):
     updated_user = User.objects.get(id=pk)
     if request.method == 'POST':
@@ -56,6 +61,7 @@ def user_update(request, pk):
     return render(request, 'admins/admin-users-update-delete.html', context)
 
 
+@user_passes_test(lambda u: u.is_superuser)
 def user_delete(request, pk):
     user = User.objects.get(pk=pk)
     user.is_active = False
