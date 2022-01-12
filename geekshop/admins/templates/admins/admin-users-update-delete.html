@@ -9,6 +9,11 @@
                 <form action="{% url 'admins:user_update' updated_user.id %}" method="post"
                       enctype="multipart/form-data">
                     {% csrf_token %}
+                    <div class="col-lg-12 text-center">
+                        <img width="400" height="400"
+                             src="{% if updated_user.image %} {{ updated_user.image.url }} {% else %} {% static 'vendor/img/users/default_avatar.jpg' %} {% endif %}"
+                             class="img-thumbnail">
+                    </div>
                     <div class="form-row">
                         <div class="col-lg-6">
                             <div class="form-group">
