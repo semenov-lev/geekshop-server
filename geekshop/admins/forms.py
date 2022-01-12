@@ -2,6 +2,7 @@ from django import forms
 
 from authapp.forms import UserRegisterForm, UserProfileForm
 from authapp.models import User
+from mainapp.models import ProductCategory, Product
 
 
 class AdminUserRegisterForm(UserRegisterForm):
@@ -35,6 +36,40 @@ class AdminUserUpdateForm(UserProfileForm):
         self.fields['email'].widget.attrs['readonly'] = False
         self.fields['username'].widget.attrs['placeholder'] = 'Имя пользователя'
         self.fields['email'].widget.attrs['placeholder'] = 'Электронная почта'
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control py-4'
+        self.fields['image'].widget.attrs['class'] = 'custom-file-input'
+
+
+class AdminCategoryForm(forms.ModelForm):
+    class Meta:
+        model = ProductCategory
+        fields = ('name', 'description')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['name'].widget.attrs['placeholder'] = 'Введите наименование категории'
+        self.fields['description'].widget.attrs['placeholder'] = 'Внесите описание категории'
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control py-4'
+
+
+class AdminProductForm(forms.ModelForm):
+
+    image = forms.ImageField(widget=forms.FileInput(), required=False)
+
+    class Meta:
+        model = Product
+        fields = ('category', 'name', 'image', 'short_description', 'description', 'price', 'quantity')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['category'].widget.attrs['placeholder'] = 'Введите категорию товара'
+        self.fields['name'].widget.attrs['placeholder'] = 'Наименование товара'
+        self.fields['short_description'].widget.attrs['placeholder'] = 'Краткое описание'
+        self.fields['description'].widget.attrs['placeholder'] = 'Описание продукта'
+        self.fields['price'].widget.attrs['placeholder'] = 'Цена'
+        self.fields['quantity'].widget.attrs['placeholder'] = 'Количество на складе'
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control py-4'
         self.fields['image'].widget.attrs['class'] = 'custom-file-input'
