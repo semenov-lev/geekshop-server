@@ -7,3 +7,5 @@ pycache/
 db.sqlite3
 
 __pycache__/
+
+/geekshop/media/
