@@ -4,14 +4,14 @@
 {% block content %}
     <main>
         <div class="container-fluid">
-            <h1 class="mt-4">Редактирование пользователя | {{ updated_user.username }}</h1>
+            <h1 class="mt-4">Редактирование пользователя | {{ user.username }}</h1>
             <div class="card-body">
-                <form action="{% url 'admins:user_update' updated_user.id %}" method="post"
+                <form action="{% url 'admins:user_update' user.id %}" method="post"
                       enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="col-lg-12 text-center">
                         <img width="400" height="400"
-                             src="{% if updated_user.image %} {{ updated_user.image.url }} {% else %} {% static 'vendor/img/users/default_avatar.jpg' %} {% endif %}"
+                             src="{% if user.image %} {{ user.image.url }} {% else %} {% static 'vendor/img/users/default_avatar.jpg' %} {% endif %}"
                              class="img-thumbnail">
                     </div>
                     <div class="form-row">
@@ -58,7 +58,7 @@
                         </div>
                     </div>
                 </form>
-                <form action="{% url 'admins:user_delete' updated_user.id %}" method="post">
+                <form action="{% url 'admins:user_delete' user.id %}" method="post">
                     {% csrf_token %}
                     <div class="row">
                         <div class="col-lg-12" style="margin-top: 33px;">
