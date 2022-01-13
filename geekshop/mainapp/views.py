@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import DetailView
 
-from .models import Product
+from .models import Product, ProductCategory
 
 
 def index(request):
@@ -11,11 +11,15 @@ def index(request):
     return render(request, 'mainapp/index.html', context)
 
 
-def products(request):
+def products(request, id_category=None):
     context = {
         'title': 'GeekShop | Каталог',
-        'products': Product.objects.all()[:6]
+        'categories': ProductCategory.objects.all(),
     }
+    if id_category:
+        context['products'] = Product.objects.filter(category=id_category)
+    else:
+        context['products'] = Product.objects.all()
     return render(request, 'mainapp/products.html', context)
 
 
