@@ -1,65 +1,55 @@
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
-
-from django.contrib import auth, messages
+from django.contrib.auth.views import LogoutView, LoginView
+from django.contrib.messages.views import SuccessMessageMixin
+from django.shortcuts import get_object_or_404
+from django.views.generic import CreateView, UpdateView
+from django.contrib import messages
 from django.http import HttpResponseRedirect
-from django.urls import reverse
+from django.urls import reverse_lazy
 from authapp.forms import UserLoginForm, UserRegisterForm, UserProfileForm
+from authapp.models import User
 from baskets.models import Basket
+from mainapp.mixin import UserDispatchMixin, BaseClassContextMixin
 
 
-def login(request):
-    if request.method == 'POST':
-        form = UserLoginForm(data=request.POST)
-        if form.is_valid():
-            username = request.POST.get('username')
-            password = request.POST.get('password')
-            user = auth.authenticate(username=username, password=password)
-            if user.is_active:
-                auth.login(request, user)
-                return HttpResponseRedirect(reverse('index'))
-    else:
-        form = UserLoginForm()
-    context = {
-        'title': 'GeekShop | Авторизация',
-        'form': form
-    }
-    return render(request, 'authapp/login.html', context)
+class UserLoginView(LoginView, BaseClassContextMixin):
+    form_class = UserLoginForm
+    template_name = 'authapp/login.html'
+    title = 'GeekShop | Авторизация'
 
 
-def register(request):
-    if request.method == 'POST':
-        form = UserRegisterForm(data=request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Вы успешно зарегистрировались!')
-            return HttpResponseRedirect(reverse('authapp:login'))
-    else:
-        form = UserRegisterForm()
-    context = {
-        'title': 'GeekShop | Регистрация',
-        'form': form
-    }
-    return render(request, 'authapp/register.html', context)
+class UserRegisterView(CreateView, BaseClassContextMixin):
+    model = User
+    template_name = 'authapp/register.html'
+    form_class = UserRegisterForm
+    success_url = reverse_lazy('authapp:login')
+    title = 'GeekShop | Регистрация'
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Данные успешно обновлены!')
+        super(UserRegisterView, self).form_valid(form)
+        return HttpResponseRedirect(self.get_success_url())
 
 
-@login_required
-def profile(request):
-    if request.method == 'POST':
-        form = UserProfileForm(instance=request.user, data=request.POST, files=request.FILES)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Данные успешно обновлены!')
-    else:
-        form = UserProfileForm(instance=request.user)
-    context = {
-        'title': 'GeekShop | Профиль',
-        'form': form,
-        'baskets': Basket.objects.filter(user=request.user),
-    }
-    return render(request, 'authapp/profile.html', context)
+class ProfileView(UpdateView, UserDispatchMixin, SuccessMessageMixin):
+    model = User
+    template_name = 'authapp/profile.html'
+    form_class = UserProfileForm
+    success_url = reverse_lazy('authapp:profile')
+
+    def get_context_data(self, **kwargs):
+        context = super(ProfileView, self).get_context_data(**kwargs)
+        context['title'] = 'GeekShop | Профиль'
+        context['baskets'] = Basket.objects.filter(user=self.request.user)
+        return context
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(User, pk=self.request.user.id)
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Данные успешно обновлены!')
+        super(ProfileView, self).form_valid(form)
+        return HttpResponseRedirect(self.get_success_url())
 
 
-def logout(request):
-    auth.logout(request)
-    return render(request, 'mainapp/index.html')
+class UserLogoutView(LogoutView):
+    template_name = 'mainapp/index.html'
