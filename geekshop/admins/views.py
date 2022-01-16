@@ -39,6 +39,7 @@ class UserDeleteView(DeleteView, AdminDispatchMixin):
     model = User
     template_name = 'admins/admin-users-update-delete.html'
     success_url = reverse_lazy('admins:user_read')
+    object = None
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
