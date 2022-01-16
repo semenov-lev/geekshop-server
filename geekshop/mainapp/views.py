@@ -1,15 +1,14 @@
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render
-from django.views.generic import DetailView
+from django.views.generic import DetailView, TemplateView
 
+from .mixin import BaseClassContextMixin
 from .models import Product, ProductCategory
 
 
-def index(request):
-    context = {
-        'title': 'GeekShop',
-    }
-    return render(request, 'mainapp/index.html', context)
+class IndexView(TemplateView, BaseClassContextMixin):
+    template_name = 'mainapp/index.html'
+    title = 'GeekShop'
 
 
 def catalog(request, id_category=None, page=1):

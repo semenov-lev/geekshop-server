@@ -18,12 +18,12 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
-import mainapp.views as mainapp
+from mainapp.views import IndexView
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', mainapp.index, name='index'),
+    path('', IndexView.as_view(), name='index'),
     path('products/', include('mainapp.urls', namespace='mainapp')),
     path('users/', include('authapp.urls', namespace='authapp')),
     path('basket/', include('baskets.urls', namespace='baskets')),
