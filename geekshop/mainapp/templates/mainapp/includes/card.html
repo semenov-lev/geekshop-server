@@ -1,28 +1,32 @@
 <div class="product_add_basket">
     <div class="row">
-        {% for product in products %}
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="card h-100">
-                    <a href="#">
-                        <img class="card-img-top"
-                             src="/media/{{ product.image }}"
-                             alt="">
-                    </a>
-                    <div class="card-body">
-                        <h4 class="card-title">
-                            <a href="{% url 'mainapp:product_detail' product.id %}">{{ product.name }}</a>
-                        </h4>
-                        <h5>{{ product.price }} руб.</h5>
-                        <p class="card-text">{{ product.short_description }}</p>
-                    </div>
-                    <div class="card-footer text-center">
-                        <button type="button" class="btn btn-outline-success" value="{{ product.id }}">
-                            Отправить в корзину
-                        </button>
+        {% if object_list %}
+            {% for product in object_list %}
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card h-100">
+                        <a href="#">
+                            <img class="card-img-top"
+                                 src="/media/{{ product.image }}"
+                                 alt="">
+                        </a>
+                        <div class="card-body">
+                            <h4 class="card-title">
+                                <a href="{% url 'mainapp:product_detail' product.id %}">{{ product.name }}</a>
+                            </h4>
+                            <h5>{{ product.price }} руб.</h5>
+                            <p class="card-text">{{ product.short_description }}</p>
+                        </div>
+                        <div class="card-footer text-center">
+                            <button type="button" class="btn btn-outline-success" value="{{ product.id }}">
+                                Отправить в корзину
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        {% endfor %}
+            {% endfor %}
+        {% else %}
+            <h2 class="my-4">В данной категории нет товаров</h2>
+        {% endif %}
     </div>
 </div>
 
