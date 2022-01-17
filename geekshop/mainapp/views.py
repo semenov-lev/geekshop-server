@@ -12,14 +12,14 @@ class IndexView(TemplateView, BaseClassContextMixin):
 class CatalogView(ListView):
     paginate_by = 3
     template_name = 'mainapp/products.html'
-    products = None
+    ordering = ['id']
 
     def get_queryset(self):
         if self.kwargs:
-            self.products = Product.objects.filter(category=self.kwargs.get('id_category'))
+            products = Product.objects.filter(category=self.kwargs.get('id_category'))
         else:
-            self.products = Product.objects.all()
-        return self.products
+            products = Product.objects.all()
+        return products.order_by('name')
 
     def get_context_data(self, **kwargs):
         context = super(CatalogView, self).get_context_data(**kwargs)
