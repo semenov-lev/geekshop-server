@@ -12,7 +12,6 @@ class IndexView(TemplateView, BaseClassContextMixin):
 class CatalogView(ListView):
     paginate_by = 3
     template_name = 'mainapp/products.html'
-    ordering = ['id']
 
     def get_queryset(self):
         if self.kwargs:
