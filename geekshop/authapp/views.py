@@ -55,17 +55,12 @@ class UserRegisterView(CreateView, BaseClassContextMixin):
             return HttpResponseRedirect(reverse('index'))
 
 
-class ProfileView(UpdateView, UserDispatchMixin, SuccessMessageMixin):
+class ProfileView(UpdateView, UserDispatchMixin, SuccessMessageMixin, BaseClassContextMixin):
     model = User
     template_name = 'authapp/profile.html'
     form_class = UserProfileForm
     success_url = reverse_lazy('authapp:profile')
-
-    def get_context_data(self, **kwargs):
-        context = super(ProfileView, self).get_context_data(**kwargs)
-        context['title'] = 'GeekShop | Профиль'
-        context['baskets'] = Basket.objects.filter(user=self.request.user)
-        return context
+    title = 'GeekShop | Профиль'
 
     def get_object(self, queryset=None):
         return get_object_or_404(User, pk=self.request.user.id)
