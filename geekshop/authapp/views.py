@@ -1,10 +1,12 @@
+from django.conf import settings
 from django.contrib.auth.views import LogoutView, LoginView
 from django.contrib.messages.views import SuccessMessageMixin
-from django.shortcuts import get_object_or_404
+from django.core.mail import send_mail
+from django.shortcuts import get_object_or_404, render
 from django.views.generic import CreateView, UpdateView
-from django.contrib import messages
+from django.contrib import messages, auth
 from django.http import HttpResponseRedirect
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from authapp.forms import UserLoginForm, UserRegisterForm, UserProfileForm
 from authapp.models import User
 from baskets.models import Basket
@@ -25,9 +27,32 @@ class UserRegisterView(CreateView, BaseClassContextMixin):
     title = 'GeekShop | Регистрация'
 
     def form_valid(self, form):
-        messages.success(self.request, 'Данные успешно обновлены!')
+        messages.success(self.request,
+                         'Регистрация прошла успешно!\nДля завершения регистрации, пройдите по ссылке в сообщении, '
+                         'которое должно прийти на указанную вами электронную почту')
         super(UserRegisterView, self).form_valid(form)
+        user = self.object
+        self.send_verify_link(user)
         return HttpResponseRedirect(self.get_success_url())
+
+    def send_verify_link(self, user):
+        verify_link = reverse('authapp:verify', args=[user.email, user.activation_key])
+        subject = f'Для активации учетной записи {user.username}, пройдите по ссылке'
+        message = f'Для подтверждения учетной заприси {user.username}, на портале\n{settings.DOMAIN_NAME}{verify_link}'
+        return send_mail(subject, message, settings.EMAIL_HOST_USER, [user.email], fail_silently=False)
+
+    def verify(self, email, activation_key):
+        try:
+            user = User.objects.get(email=email)
+            if user and user.activation_key == activation_key and not user.is_activation_key_expires():
+                user.activation_key = ''
+                user.activation_key_expires = None
+                user.is_active = True
+                user.save()
+                auth.login(self, user)
+            return render(self, 'authapp/verification.html')
+        except Exception:
+            return HttpResponseRedirect(reverse('index'))
 
 
 class ProfileView(UpdateView, UserDispatchMixin, SuccessMessageMixin):
