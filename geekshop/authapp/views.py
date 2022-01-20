@@ -79,11 +79,6 @@ class ProfileView(UpdateView, UserDispatchMixin, SuccessMessageMixin, BaseClassC
         context['profile'] = UserProfileEditForm(instance=self.request.user.userprofile)
         return context
 
-    # def form_valid(self, form):
-    #     messages.success(self.request, 'Данные успешно обновлены!')
-    #     super(ProfileView, self).form_valid(form)
-    #     return HttpResponseRedirect(self.get_success_url())
-
 
 class UserLogoutView(LogoutView):
     template_name = 'mainapp/index.html'
