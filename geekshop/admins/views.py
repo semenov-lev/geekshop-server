@@ -5,7 +5,8 @@ from django.views.generic import TemplateView, ListView, CreateView, UpdateView,
 from authapp.models import User
 from mainapp.mixin import BaseClassContextMixin, AdminDispatchMixin
 from mainapp.models import ProductCategory, Product
-from .forms import AdminUserRegisterForm, AdminUserUpdateForm, AdminCategoryForm, AdminProductForm
+from ordersapp.models import Order
+from .forms import AdminUserRegisterForm, AdminUserUpdateForm, AdminCategoryForm, AdminProductForm, AdminOrderForm
 
 
 class AdminIndexView(TemplateView, BaseClassContextMixin, AdminDispatchMixin):
@@ -100,3 +101,17 @@ class ProductUpdateView(UpdateView, BaseClassContextMixin, AdminDispatchMixin):
 class ProductDeleteView(DeleteView, AdminDispatchMixin):
     model = Product
     success_url = reverse_lazy('admins:product_read')
+
+
+class OrdersListView(ListView, BaseClassContextMixin, AdminDispatchMixin):
+    model = Order
+    title = 'GeekShop - Администратор | Просмотр заказов'
+    template_name = 'admins/admin-orders-read.html'
+
+
+class OrdersUpdateView(UpdateView, BaseClassContextMixin, AdminDispatchMixin):
+    model = Order
+    template_name = 'admins/admin-orders-update.html'
+    title = 'GeekShop - Администратор | Обновление заказа'
+    form_class = AdminOrderForm
+    success_url = reverse_lazy('admins:orders_read')

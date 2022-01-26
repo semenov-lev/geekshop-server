@@ -3,10 +3,10 @@ from django import forms
 from authapp.forms import UserRegisterForm, UserProfileForm
 from authapp.models import User
 from mainapp.models import ProductCategory, Product
+from ordersapp.models import Order
 
 
 class AdminUserRegisterForm(UserRegisterForm):
-
     image = forms.ImageField(widget=forms.FileInput(), required=False)
 
     class Meta:
@@ -55,7 +55,6 @@ class AdminCategoryForm(forms.ModelForm):
 
 
 class AdminProductForm(forms.ModelForm):
-
     image = forms.ImageField(widget=forms.FileInput(), required=False)
 
     class Meta:
@@ -76,3 +75,17 @@ class AdminProductForm(forms.ModelForm):
             else:
                 field.widget.attrs['class'] = 'form-control py-4'
         self.fields['image'].widget.attrs['class'] = 'custom-file-input'
+
+
+class AdminOrderForm(forms.ModelForm):
+    status = forms.ChoiceField(choices=Order.ORDER_STATUS_CHOICES)
+
+    class Meta:
+        model = Order
+        fields = ('status',)
+
+    def __init__(self, *args, **kwargs):
+        super(AdminOrderForm, self).__init__(*args, **kwargs)
+        self.fields['status'].widget.attrs['placeholder'] = 'Статус заказа'
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
