@@ -8,7 +8,6 @@ window.onload = function () {
                     $('.basket_list').html(data.result)
                 },
             });
-        event.preventDefault()
     })
 
     $('.product_add_basket').on('click', 'button[type="button"]', function () {
@@ -20,6 +19,5 @@ window.onload = function () {
                     $('.product_add_basket').html(data.result)
                 },
             });
-        event.preventDefault()
     })
 }
