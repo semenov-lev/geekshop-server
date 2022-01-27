@@ -28,11 +28,12 @@ class OrdersCreateView(CreateView, BaseClassContextMixin):
     def get_context_data(self, **kwargs):
         context = super(OrdersCreateView, self).get_context_data(**kwargs)
         OrderFormSet = inlineformset_factory(Order, OrderItem, form=OrderItemsForm, extra=1)
+        basket_item = Basket.objects.filter(user=self.request.user)
 
         if self.request.POST:
             formset = OrderFormSet(self.request.POST)
+            basket_item.delete()
         else:
-            basket_item = Basket.objects.filter(user=self.request.user)
             if basket_item:
                 OrderFormSet = inlineformset_factory(Order, OrderItem, form=OrderItemsForm, extra=basket_item.count())
                 formset = OrderFormSet()
@@ -40,7 +41,6 @@ class OrdersCreateView(CreateView, BaseClassContextMixin):
                     form.initial['product'] = basket_item[count].product
                     form.initial['quantity'] = basket_item[count].quantity
                     form.initial['price'] = basket_item[count].product.price
-                basket_item.delete()
             else:
                 formset = OrderFormSet()
         context['orderitems'] = formset
