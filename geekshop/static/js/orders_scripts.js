@@ -35,18 +35,17 @@ window.onload = function () {
         }
     });
 
-    // $('.order_form').on('click', 'input[type=checkbox]', function () {
-    //
-    //     let target = event.target;
-    //     orderitem_num = parseInt(target.name.replace('orderitems-', '').replace('-DELETE', ''));
-    //     if (target.checked) {
-    //         delta_quantity = -quantity_arr[orderitem_num]
-    //     } else {
-    //         delta_quantity = quantity_arr[orderitem_num];
-    //     }
-    //     orderSummaryUpdate(price_arr[orderitem_num], delta_quantity);
-    // });
+    $('.order_form').on('click', 'input[type=checkbox]', function () {
 
+        let target = event.target;
+        orderitem_num = parseInt(target.name.replace('orderitems-', '').replace('-DELETE', ''));
+        if (target.checked) {
+            delta_quantity = -quantity_arr[orderitem_num]
+        } else {
+            delta_quantity = quantity_arr[orderitem_num];
+        }
+        orderSummaryUpdate(price_arr[orderitem_num], delta_quantity);
+    });
 
     function orderSummaryUpdate(orderitem_price, delta_quantity) {
         delta_cost = orderitem_price * delta_quantity;
@@ -61,6 +60,7 @@ window.onload = function () {
         deleteText: 'Удалить',
         prefix: 'orderitems',
         removed: deleteOrderItem,
+
     });
 
     function deleteOrderItem(row) {
@@ -70,7 +70,7 @@ window.onload = function () {
         orderSummaryUpdate(price_arr[orderitem_num], delta_quantity)
     }
 
-    $('.order_form select').change(function () {
+    $(document).on('change', '.order_form select', function () {
 
         let target = event.target;
         orderitem_num = parseInt(target.name.replace('orderitems-', '').replace('-product', ''));
@@ -94,7 +94,34 @@ window.onload = function () {
                         current_tr.find('td:eq(2)').html(price_html)
                     }
                 }
+
+
             })
         }
+
+    })
+
+    $('.basket_list').on('click', 'input[type="number"]', function () {
+        let t_href = event.target
+        $.ajax(
+            {
+                url: "/basket/edit/" + t_href.name + "/" + t_href.value + "/",
+                success: function (data) {
+                    $('.basket_list').html(data.result)
+                },
+            });
+        event.preventDefault()
+    })
+
+    $('.product_add_basket').on('click', 'button[type="button"]', function () {
+        let t_href = event.target.value
+        $.ajax(
+            {
+                url: "/basket/add/" + t_href + "/",
+                success: function (data) {
+                    $('.product_add_basket').html(data.result)
+                },
+            });
+        event.preventDefault()
     })
 }
