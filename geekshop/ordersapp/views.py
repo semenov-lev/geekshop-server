@@ -2,13 +2,14 @@ from django.db import transaction
 from django.db.models.signals import pre_save, pre_delete
 from django.dispatch import receiver
 from django.forms import inlineformset_factory
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 
 from baskets.models import Basket
 from mainapp.mixin import BaseClassContextMixin
+from mainapp.models import Product
 from ordersapp.forms import OrderItemsForm
 from ordersapp.models import Order, OrderItem
 
@@ -28,19 +29,19 @@ class OrdersCreateView(CreateView, BaseClassContextMixin):
     def get_context_data(self, **kwargs):
         context = super(OrdersCreateView, self).get_context_data(**kwargs)
         OrderFormSet = inlineformset_factory(Order, OrderItem, form=OrderItemsForm, extra=1)
-        basket_item = Basket.objects.filter(user=self.request.user)
+        basket_items = Basket.objects.filter(user=self.request.user)
 
         if self.request.POST:
             formset = OrderFormSet(self.request.POST)
-            basket_item.delete()
+            basket_items.delete()
         else:
-            if basket_item:
-                OrderFormSet = inlineformset_factory(Order, OrderItem, form=OrderItemsForm, extra=basket_item.count())
+            if basket_items:
+                OrderFormSet = inlineformset_factory(Order, OrderItem, form=OrderItemsForm, extra=basket_items.count())
                 formset = OrderFormSet()
                 for count, form in enumerate(formset.forms):
-                    form.initial['product'] = basket_item[count].product
-                    form.initial['quantity'] = basket_item[count].quantity
-                    form.initial['price'] = basket_item[count].product.price
+                    form.initial['product'] = basket_items[count].product
+                    form.initial['quantity'] = basket_items[count].quantity
+                    form.initial['price'] = basket_items[count].product.price
             else:
                 formset = OrderFormSet()
         context['orderitems'] = formset
@@ -115,6 +116,14 @@ def order_forming_complete(request, pk):
     order.status = Order.SEND_TO_PROCEED
     order.save()
     return HttpResponseRedirect(reverse('ordersapp:list'))
+
+
+def get_product_price(request, pk):
+    if request.is_ajax():
+        product = Product.objects.get(pk=pk)
+        if product:
+            return JsonResponse({'price': product.price})
+        return JsonResponse({'price': 0})
 
 
 @receiver(pre_save, sender=Basket)
