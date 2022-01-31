@@ -38,7 +38,9 @@ class UserRegisterView(CreateView, BaseClassContextMixin):
     def send_verify_link(self, user):
         verify_link = reverse('authapp:verify', args=[user.email, user.activation_key])
         subject = f'Для активации учетной записи {user.username}, пройдите по ссылке'
-        message = f'Для подтверждения учетной заприси {user.username}, на портале\n{settings.DOMAIN_NAME}{verify_link}'
+        message = f'Для подтверждения учетной записи {user.username}, на портале "Магазин дорогого барахла", ' \
+                  f'пройдите по ссылке:\n{settings.DOMAIN_NAME}{verify_link}\n\nОтвечать на это письмо ' \
+                  f'бессмысленно.'
         return send_mail(subject, message, settings.EMAIL_HOST_USER, [user.email], fail_silently=False)
 
     def verify(self, email, activation_key):
@@ -56,7 +58,6 @@ class UserRegisterView(CreateView, BaseClassContextMixin):
 
 
 class ProfileView(UpdateView, UserDispatchMixin, SuccessMessageMixin, BaseClassContextMixin):
-    model = User
     template_name = 'authapp/profile.html'
     form_class = UserProfileForm
     success_url = reverse_lazy('authapp:profile')
