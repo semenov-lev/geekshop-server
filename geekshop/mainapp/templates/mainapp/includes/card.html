@@ -16,11 +16,14 @@
                             <h5>{{ product.price }} руб.</h5>
                             <p class="card-text">{{ product.short_description }}</p>
                         </div>
-                        <div class="card-footer text-center">
-                            <button type="button" class="btn btn-outline-success" value="{{ product.id }}">
-                                Отправить в корзину
-                            </button>
-                        </div>
+                        <form>
+                            <div class="card-footer text-center">
+                                <button type="button" class="btn btn-outline-success">
+                                    <a href="{% url 'baskets:basket_add' product.id %}">Отправить в корзину</a>
+                                </button>
+                            </div>
+                        </form>
+
                     </div>
                 </div>
             {% endfor %}

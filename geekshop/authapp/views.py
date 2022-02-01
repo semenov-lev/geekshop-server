@@ -10,6 +10,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
 from authapp.forms import UserLoginForm, UserRegisterForm, UserProfileForm, UserProfileEditForm
 from authapp.models import User
+from baskets.models import Basket
 from mainapp.mixin import UserDispatchMixin, BaseClassContextMixin
 
 
@@ -77,6 +78,7 @@ class ProfileView(UpdateView, UserDispatchMixin, SuccessMessageMixin, BaseClassC
 
     def get_context_data(self, **kwargs):
         context = super(ProfileView, self).get_context_data(**kwargs)
+        context['baskets'] = Basket.objects.filter(user=self.request.user)
         context['profile'] = UserProfileEditForm(instance=self.request.user.userprofile)
         return context
 
