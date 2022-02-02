@@ -119,7 +119,7 @@ def order_forming_complete(request, pk):
 
 
 def get_product_price(request, pk):
-    if request.is_ajax():
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         product = Product.objects.get(pk=pk)
         if product:
             return JsonResponse({'price': product.price})
