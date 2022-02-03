@@ -8,19 +8,23 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 
 from baskets.models import Basket
-from mainapp.mixin import BaseClassContextMixin
+from mainapp.mixin import BaseClassContextMixin, UserDispatchMixin
 from mainapp.models import Product
 from ordersapp.forms import OrderItemsForm
 from ordersapp.models import Order, OrderItem
 
 
-class OrdersListView(ListView, BaseClassContextMixin):
+class OrdersListView(ListView, UserDispatchMixin, BaseClassContextMixin):
     model = Order
     template_name = 'ordersapp/order_list.html'
     title = 'GeekShop | Список заказов'
 
+    def get_queryset(self):
+        main_qs = super(OrdersListView, self).get_queryset()
+        return main_qs.filter(user_id=self.request.user.id)
 
-class OrdersCreateView(CreateView, BaseClassContextMixin):
+
+class OrdersCreateView(CreateView, UserDispatchMixin, BaseClassContextMixin):
     model = Order
     fields = []
     success_url = reverse_lazy('ordersapp:list')
@@ -45,6 +49,7 @@ class OrdersCreateView(CreateView, BaseClassContextMixin):
             else:
                 formset = OrderFormSet()
         context['orderitems'] = formset
+        context['title'] = self.title
         return context
 
     def form_valid(self, form):
@@ -64,21 +69,27 @@ class OrdersCreateView(CreateView, BaseClassContextMixin):
         return super(OrdersCreateView, self).form_valid(form)
 
 
-class OrdersDetailView(DetailView, BaseClassContextMixin):
+class OrdersDetailView(DetailView, UserDispatchMixin, BaseClassContextMixin):
     model = Order
     title = 'GeekShop | Просмотр заказа'
 
+    def get_object(self, queryset=None):
+        return get_object_or_404(Order, user_id=self.request.user.id, pk=self.kwargs.get('pk'))
 
-class OrdersUpdateView(UpdateView, BaseClassContextMixin):
+
+class OrdersUpdateView(UpdateView, UserDispatchMixin):
     model = Order
     fields = []
     success_url = reverse_lazy('ordersapp:list')
     title = 'GeekShop | Редактирование заказа'
 
+    def get_object(self, queryset=None):
+        return get_object_or_404(Order, user_id=self.request.user.id, pk=self.kwargs.get('pk'))
+
     def get_context_data(self, **kwargs):
         context = super(OrdersUpdateView, self).get_context_data(**kwargs)
         OrderFormSet = inlineformset_factory(Order, OrderItem, form=OrderItemsForm, extra=1)
-
+        
         if self.request.POST:
             formset = OrderFormSet(self.request.POST, instance=self.object)
         else:
@@ -87,6 +98,7 @@ class OrdersUpdateView(UpdateView, BaseClassContextMixin):
                 if form.instance.pk:
                     form.initial['price'] = form.instance.product.price
         context['orderitems'] = formset
+        context['title'] = self.title
         return context
 
     def form_valid(self, form):
@@ -105,7 +117,7 @@ class OrdersUpdateView(UpdateView, BaseClassContextMixin):
         return super(OrdersUpdateView, self).form_valid(form)
 
 
-class OrdersDeleteView(DeleteView, BaseClassContextMixin):
+class OrdersDeleteView(DeleteView, UserDispatchMixin, BaseClassContextMixin):
     model = Order
     success_url = reverse_lazy('ordersapp:list')
     title = 'GeekShop | Удаление заказа'

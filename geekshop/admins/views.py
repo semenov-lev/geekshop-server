@@ -81,6 +81,9 @@ class ProductListView(ListView, BaseClassContextMixin, AdminDispatchMixin):
     template_name = 'admins/admin-product-read.html'
     title = 'GeekShop - Администратор | Продукты'
 
+    def get_queryset(self):
+        return Product.objects.select_related('category')
+
 
 class ProductCreateView(CreateView, BaseClassContextMixin, AdminDispatchMixin):
     model = Product
