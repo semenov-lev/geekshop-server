@@ -1,1 +1,3 @@
-geekshop-server
+Geekshop
+
+Сайт - магазин одежды, разработанный на django framework в рамках учебного проекта
